@@ -1,0 +1,3 @@
+[submodule "memory-compiler"]
+	path = memory-compiler
+	url = https://github.com/coleam00/claude-memory-compiler
