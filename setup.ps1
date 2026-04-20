@@ -31,36 +31,17 @@ uv sync
 Set-Location $RepoRoot
 Write-Host "  OK" -ForegroundColor Green
 
-# ─── 3. Патч DAILY_DIR в memory-compiler ───────────────────────────────────
-Write-Host "[3/4] Патч путей в memory-compiler (DAILY_DIR → vault)..." -ForegroundColor Yellow
+# ─── 3. Применение патчей из patches/ ─────────────────────────────────────
+Write-Host "[3/4] Применение патчей (vault paths + git sync)..." -ForegroundColor Yellow
 
-$VaultDirEscaped = $VaultDir -replace '\\', '\\\\'
+$PatchesDir = Join-Path $RepoRoot "patches"
 
-# flush.py
-$FlushPath = Join-Path $MemoryCompilerDir "scripts\flush.py"
-$FlushContent = Get-Content $FlushPath -Raw
-if ($FlushContent -notmatch "VAULT_DIR") {
-    $FlushContent = $FlushContent -replace `
-        'ROOT = Path\(__file__\)\.resolve\(\)\.parent\.parent\r?\nDAILY_DIR = ROOT / "daily"', `
-        "ROOT = Path(__file__).resolve().parent.parent`nVAULT_DIR = ROOT.parent / `"Anekeika LLM Wiki — Метод Карпати`"`nDAILY_DIR = VAULT_DIR / `"daily`""
-    Set-Content $FlushPath $FlushContent -Encoding UTF8
-    Write-Host "  flush.py — patched" -ForegroundColor Green
-} else {
-    Write-Host "  flush.py — уже patched, пропускаем" -ForegroundColor Gray
-}
+# Патчи хранятся как полные файлы в patches/ — просто копируем поверх submodule
+Copy-Item (Join-Path $PatchesDir "flush.py")         (Join-Path $MemoryCompilerDir "scripts\flush.py")        -Force
+Copy-Item (Join-Path $PatchesDir "session-start.py") (Join-Path $MemoryCompilerDir "hooks\session-start.py")  -Force
 
-# session-start.py
-$SessionStartPath = Join-Path $MemoryCompilerDir "hooks\session-start.py"
-$SessionContent = Get-Content $SessionStartPath -Raw
-if ($SessionContent -notmatch "VAULT_DIR") {
-    $SessionContent = $SessionContent -replace `
-        'ROOT = Path\(__file__\)\.resolve\(\)\.parent\.parent\r?\nKNOWLEDGE_DIR = ROOT / "knowledge"\r?\nDAILY_DIR = ROOT / "daily"', `
-        "ROOT = Path(__file__).resolve().parent.parent`nKNOWLEDGE_DIR = ROOT / `"knowledge`"`nVAULT_DIR = ROOT.parent / `"Anekeika LLM Wiki — Метод Карпати`"`nDAILY_DIR = VAULT_DIR / `"daily`""
-    Set-Content $SessionStartPath $SessionContent -Encoding UTF8
-    Write-Host "  session-start.py — patched" -ForegroundColor Green
-} else {
-    Write-Host "  session-start.py — уже patched, пропускаем" -ForegroundColor Gray
-}
+Write-Host "  flush.py — OK" -ForegroundColor Green
+Write-Host "  session-start.py — OK" -ForegroundColor Green
 
 # ─── 4. Хуки в ~/.claude/settings.json ────────────────────────────────────
 Write-Host "[4/4] Настройка хуков Claude Code в settings.json..." -ForegroundColor Yellow
