@@ -1,0 +1,13 @@
+# Obsidian workspace state (machine-specific, changes constantly)
+.obsidian/workspace.json
+.obsidian/workspace-mobile.json
+.obsidian/cache
+
+# Keep plugin configs and theme settings:
+# .obsidian/plugins/      → НЕ игнорируем (важно для других ПК)
+# .obsidian/app.json      → НЕ игнорируем (настройки)
+# .obsidian/appearance.json → НЕ игнорируем
+
+# OS
+.DS_Store
+Thumbs.db
