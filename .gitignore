@@ -6,5 +6,8 @@
 .DS_Store
 Thumbs.db
 
-# Claude Code local settings (machine-specific)
+# Claude Code (machine-specific state)
 .claude/settings.local.json
+.claude/worktrees/
+.claude/todos/
+.claude/projects/
