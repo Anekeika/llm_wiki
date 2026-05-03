@@ -5,7 +5,7 @@
 $ErrorActionPreference = "Stop"
 $RepoRoot = $PSScriptRoot
 $MemoryCompilerDir = Join-Path $RepoRoot "memory-compiler"
-$VaultDir = Join-Path $RepoRoot "Anekeika LLM Wiki — Метод Карпати"
+$VaultDir = Join-Path $RepoRoot "vault"
 $ClaudeDir = Join-Path $env:USERPROFILE ".claude"
 $SettingsFile = Join-Path $ClaudeDir "settings.json"
 
@@ -14,14 +14,8 @@ Write-Host "=== Wiki Setup ===" -ForegroundColor Cyan
 Write-Host "Repo: $RepoRoot"
 Write-Host ""
 
-# ─── 1. Submodule ──────────────────────────────────────────────────────────
-Write-Host "[1/4] Инициализация submodule memory-compiler..." -ForegroundColor Yellow
-Set-Location $RepoRoot
-git submodule update --init --recursive
-Write-Host "  OK" -ForegroundColor Green
-
-# ─── 2. Python зависимости ─────────────────────────────────────────────────
-Write-Host "[2/4] Установка Python зависимостей (uv sync)..." -ForegroundColor Yellow
+# ─── 1. Python зависимости ─────────────────────────────────────────────────
+Write-Host "[1/2] Установка Python зависимостей (uv sync)..." -ForegroundColor Yellow
 if (-not (Get-Command uv -ErrorAction SilentlyContinue)) {
     Write-Host "  uv не найден. Установка..." -ForegroundColor Yellow
     Invoke-RestMethod https://astral.sh/uv/install.ps1 | Invoke-Expression
@@ -31,20 +25,8 @@ uv sync
 Set-Location $RepoRoot
 Write-Host "  OK" -ForegroundColor Green
 
-# ─── 3. Применение патчей из patches/ ─────────────────────────────────────
-Write-Host "[3/4] Применение патчей (vault paths + git sync)..." -ForegroundColor Yellow
-
-$PatchesDir = Join-Path $RepoRoot "patches"
-
-# Патчи хранятся как полные файлы в patches/ — просто копируем поверх submodule
-Copy-Item (Join-Path $PatchesDir "flush.py")         (Join-Path $MemoryCompilerDir "scripts\flush.py")        -Force
-Copy-Item (Join-Path $PatchesDir "session-start.py") (Join-Path $MemoryCompilerDir "hooks\session-start.py")  -Force
-
-Write-Host "  flush.py — OK" -ForegroundColor Green
-Write-Host "  session-start.py — OK" -ForegroundColor Green
-
-# ─── 4. Хуки в ~/.claude/settings.json ────────────────────────────────────
-Write-Host "[4/4] Настройка хуков Claude Code в settings.json..." -ForegroundColor Yellow
+# ─── 2. Хуки в ~/.claude/settings.json ────────────────────────────────────
+Write-Host "[2/2] Настройка хуков Claude Code в settings.json..." -ForegroundColor Yellow
 
 $MemoryCompilerDirJson = $MemoryCompilerDir -replace '\\', '\\'
 

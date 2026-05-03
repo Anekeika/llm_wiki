@@ -97,9 +97,9 @@ tags:
 ## Структура файлов
 
 ```
-E:\anekeika-llm-wiki\                          ← скрипты, конфиг, код
+E:\anekeika-llm-wiki\                ← скрипты, конфиг, код
 │
-E:\anekeika-llm-wiki\Anekeika LLM Wiki — Метод Карпати\   ← Obsidian vault
+E:\anekeika-llm-wiki\vault\          ← Obsidian vault
 ├── raw/                  # исходники (иммутабельно)
 │   ├── Clippings/        # входящие из Obsidian Web Clipper
 │   ├── articles/

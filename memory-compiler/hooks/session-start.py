@@ -25,11 +25,10 @@ from pathlib import Path
 
 # Paths relative to project root
 ROOT = Path(__file__).resolve().parent.parent
-WIKI_DIR = ROOT.parent  # E:\anekeika-llm-wiki — git repo root
-KNOWLEDGE_DIR = ROOT / "knowledge"
-VAULT_DIR = ROOT.parent / "Anekeika LLM Wiki — Метод Карпати"
-DAILY_DIR = VAULT_DIR / "daily"
-INDEX_FILE = KNOWLEDGE_DIR / "index.md"
+sys.path.insert(0, str(ROOT / "scripts"))
+from config import DAILY_DIR, INDEX_FILE, KNOWLEDGE_DIR, REPO_DIR  # noqa: E402
+
+WIKI_DIR = REPO_DIR  # repo root, used for git pull/push
 
 MAX_CONTEXT_CHARS = 20_000
 MAX_LOG_LINES = 30

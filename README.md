@@ -15,37 +15,40 @@
 ## Структура
 
 ```
-Anekeika LLM Wiki — Метод Карпати/   # Obsidian vault
-  daily/                              # дейли-логи (пишутся автоматически)
-  raw/Clippings/                      # исходники из Obsidian Web Clipper
-  wiki/                               # wiki по проектам
-    llm-wiki/                         # концепции LLM Wiki + оптимизация токенов
-    peon-ping/                        # голосовые уведомления для Claude Code
-    uphuman/                          # RPG-геймификация личного развития (Vue3)
-    bottelegram/                      # Telegram-бот (задачи + Notion + календарь)
-  CLAUDE.md                           # схема wiki для Claude
-  log.md                              # лог операций
+vault/                              # Obsidian vault — основная wiki
+  daily/                            # дейли-логи (пишутся автоматически)
+  knowledge/                        # скомпилированная база знаний
+  raw/Clippings/                    # исходники из Obsidian Web Clipper
+  wiki/                             # wiki по проектам
+    llm-wiki/                       # концепции LLM Wiki + оптимизация токенов
+    peon-ping/                      # голосовые уведомления для Claude Code
+    uphuman/                        # RPG-геймификация личного развития (Vue3)
+    bottelegram/                    # Telegram-бот (задачи + Notion + календарь)
+  _meta/                            # системная документация (Pipeline, User Flow и т.д.)
+  CLAUDE.md                         # схема wiki для Claude
+  log.md                            # лог операций
 
-memory-compiler/                      # git submodule — движок памяти
-  hooks/                              # SessionStart / SessionEnd / PreCompact
-  scripts/                            # flush.py, compile.py, query.py, lint.py
-  knowledge/                          # скомпилированная база знаний
+memory-compiler/                    # движок памяти (форк, см. Credits)
+  hooks/                            # SessionStart / SessionEnd / PreCompact
+  scripts/                          # flush.py, compile.py, query.py, lint.py, config.py
 
-setup.ps1                             # установка на новую машину
-SETUP.md                              # инструкция
+setup.ps1                           # установка на новую машину
+SETUP.md                            # подробная инструкция (можно отдать коллеге)
 ```
 
-## Установка на новую машину
+## Установка на новую (свою) машину
 
 ```powershell
-git clone --recurse-submodules https://github.com/Anekeika/llm_wiki.git
+git clone https://github.com/Anekeika/llm_wiki.git
 cd llm_wiki
 powershell -ExecutionPolicy Bypass -File setup.ps1
 ```
 
-Скрипт автоматически: инициализирует submodule, устанавливает зависимости (`uv sync`), патчит пути, добавляет хуки в `~/.claude/settings.json`.
+Скрипт ставит зависимости (`uv sync`) и добавляет хуки в `~/.claude/settings.json`.
 
-Подробнее → [SETUP.md](SETUP.md)
+## Поделиться системой с кем-то
+
+[SETUP.md](SETUP.md) — самодостаточный документ с описанием идеи и архитектуры. Можно отдать коллеге: его Claude Code прочитает и соберёт похожую систему с нуля (без доступа к этому приватному репо).
 
 ## Полезные команды
 
@@ -55,3 +58,10 @@ uv run python scripts/compile.py           # скомпилировать лог
 uv run python scripts/query.py "вопрос"   # спросить базу знаний
 uv run python scripts/lint.py             # проверить здоровье wiki
 ```
+
+## Credits
+
+Папка `memory-compiler/` — адаптация [coleam00/claude-memory-compiler](https://github.com/coleam00/claude-memory-compiler) (изначально подключалась как git submodule, поглощена в репо для свободы модификации). Архитектура движка — оригинальная работа автора апстрима. Изменения относительно апстрима:
+
+- `scripts/flush.py` — пути логов перенаправлены в Obsidian vault
+- `hooks/session-start.py` — git pull/push для синхронизации между устройствами

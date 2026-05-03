@@ -26,10 +26,10 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-WIKI_DIR = ROOT.parent  # E:\anekeika-llm-wiki — git repo root
-VAULT_DIR = ROOT.parent / "Anekeika LLM Wiki — Метод Карпати"
-DAILY_DIR = VAULT_DIR / "daily"
-SCRIPTS_DIR = ROOT / "scripts"
+sys.path.insert(0, str(ROOT / "scripts"))
+from config import DAILY_DIR, REPO_DIR, SCRIPTS_DIR  # noqa: E402
+
+WIKI_DIR = REPO_DIR  # repo root (kept for backwards compat with rest of file)
 STATE_FILE = SCRIPTS_DIR / "last-flush.json"
 LOG_FILE = SCRIPTS_DIR / "flush.log"
 
